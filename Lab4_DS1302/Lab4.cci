@@ -1,0 +1,10 @@
+VERSION:3 SOURCE_TIMESTAMP:590D8E90
+NODE:I LEVEL:0 LINE:24 "C:\cvavreval\inc\mega16.h"
+NODE:I LEVEL:0 LINE:25 "C:\cvavreval\inc\stdio.h"
+NODE:I LEVEL:0 LINE:28 "C:\cvavreval\inc\delay.h"
+NODE:I LEVEL:0 LINE:30 "C:\cvavreval\inc\alcd.h"
+NODE:I LEVEL:0 LINE:39 "C:\cvavreval\inc\ds1302.h"
+NODE:F LEVEL:0 LINE:45 "ext_int0_isr(void)"
+NODE:F LEVEL:0 LINE:52 "ext_int1_isr(void)"
+NODE:V LEVEL:0 LINE:59 "display_buffer -> RAM:????"
+NODE:F LEVEL:0 LINE:61 "main(void)"

@@ -1,0 +1,55 @@
+RAM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+display_buffer                                                                    0x0160      16
+_base_y (alcd.lib)                                                                0x0170       4
+_lcd_maxx                                                                         0x0174       1
+
+EEPROM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+
+Register Allocation
+Variable                                                                          Register  Size
+------------------------------------------------------------------------------------------------
+adjustment_mode                                                                   R5           1
+adjustment_field                                                                  R4           1
+hour                                                                              R7           1
+min                                                                               R6           1
+sec                                                                               R9           1
+day                                                                               R8           1
+month                                                                             R11          1
+year                                                                              R10          1
+_lcd_x                                                                            R13          1
+_lcd_y                                                                            R12          1
+
+FLASH Allocation [words]
+Function                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+ext_int0_isr                                                                      0x000A8     19
+ext_int1_isr                                                                      0x000BB     99
+main                                                                              0x0011E    203
+put_buff_G100                                                                     0x001E9     46
+_print_G100                                                                       0x00217    293
+sprintf                                                                           0x0033C     55
+_lcd_write_nibble_G101                                                            0x00373     22
+_lcd_write_data                                                                   0x00389     14
+lcd_gotoxy                                                                        0x00397     13
+lcd_clear                                                                         0x003A4     10
+lcd_putchar                                                                       0x003AE     24
+lcd_puts                                                                          0x003C6     15
+lcd_init                                                                          0x003D5     44
+ds1302_rst0_G102                                                                  0x00401      5
+ds1302_write0_G102                                                                0x00406     13
+ds1302_write1_G102                                                                0x00413     22
+ds1302_read                                                                       0x00429     26
+ds1302_write                                                                      0x00443     12
+rtc_init                                                                          0x0044F     19
+rtc_get_time                                                                      0x00462      7
+rtc_set_time                                                                      0x00469      8
+rtc_get_date                                                                      0x00471     14
+rtc_set_date                                                                      0x0047F     19
+strlen                                                                            0x00492     12
+strlenf                                                                           0x0049E     13
+bcd2bin                                                                           0x004AB     13
+bin2bcd                                                                           0x004B8     10

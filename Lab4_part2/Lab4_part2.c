@@ -1,0 +1,294 @@
+/*******************************************************
+This program was created by the CodeWizardAVR V4.02 
+Automatic Program Generator
+© Copyright 1998-2024 Pavel Haiduc, HP InfoTech S.R.L.
+http://www.hpinfotech.ro
+
+Project : 
+Version : 
+Date    :  8/13/2024
+Author  : 
+Company : 
+Comments: 
+
+
+Chip type               : ATmega16
+Program type            : Application
+AVR Core Clock frequency: 16.000000 MHz
+Memory model            : Small
+External RAM size       : 0
+Data Stack size         : 256
+*******************************************************/
+
+// I/O Registers definitions
+#include <mega16.h>
+#include <stdio.h>
+
+// delay
+#include <delay.h>
+// Alphanumeric LCD functions
+#include <alcd.h>
+
+// DS1302 Real Time Clock functions
+#asm
+   .equ __ds1302_port=0x1B ;PORTA
+   .equ __ds1302_io=6
+   .equ __ds1302_sclk=7
+   .equ __ds1302_rst=5
+#endasm
+#include <ds1302.h>
+
+// Declare your global variables here
+char display_buffer[16]; /* LCD display buffer for 1 line */
+// Declare global variables
+char adjustment_mode = 0; // 0 = Normal mode, 1 = Adjustment mode
+char adjustment_field = 0; // 0 = Year, 1 = Month, 2 = Day, 3 = Hour, 4 = Minute, 5 = Second
+unsigned char hour,min,sec,day,month,year;
+
+// External Interrupt 0 service routine
+// Enter and quit the state of time change
+// Choose to change year, month, day, hour, minute, second
+interrupt [EXT_INT0] void ext_int0_isr(void)
+{
+// Place your code here
+// To do:
+if (adjustment_mode == 0) {
+        // Enter adjustment mode
+        adjustment_mode = 1;
+        adjustment_field = 0; // Start with adjusting the year
+    } else {
+        // Move to the next field or exit adjustment mode
+        if (adjustment_field < 5) {
+            adjustment_field++;
+        } else {
+            adjustment_mode = 0; // Exit adjustment mode
+        }
+    }
+}
+
+// External Interrupt 1 service routine
+interrupt [EXT_INT1] void ext_int1_isr(void)
+{
+// Place your code here
+if (adjustment_mode == 1) {
+        switch (adjustment_field) {
+            case 0: // Adjust year
+                year++;
+                if (year > 99) year = 0; // Wrap around if year exceeds 99
+                rtc_set_date(day, month, year);
+                break;
+            case 1: // Adjust month
+                month++;
+                if (month > 12) month = 1; // Wrap around if month exceeds 12
+                rtc_set_date(day, month, year);
+                break;
+            case 2: // Adjust day
+                day++;
+                if (day > 31) day = 1; // Wrap around if day exceeds 31
+                rtc_set_date(day, month, year);
+                break;
+            case 3: // Adjust hour
+                hour++;
+                if (hour > 23) hour = 0; // Wrap around if hour exceeds 23
+                rtc_set_time(hour, min, sec);
+                break;
+            case 4: // Adjust minute
+                min++;
+                if (min > 59) min = 0; // Wrap around if minute exceeds 59
+                rtc_set_time(hour, min, sec);
+                break;
+            case 5: // Adjust second
+                sec++;
+                if (sec > 59) sec = 0; // Wrap around if second exceeds 59
+                rtc_set_time(hour, min, sec);
+                break;
+        }
+    }
+}
+/*
+// Declare your global variables here
+char display_buffer[16]; /* LCD display buffer for 1 line */
+// Declare global variables
+char adjustment_mode; // 0 = Normal mode, 1 = Adjustment mode
+char adjustment_field; // 0 = Year, 1 = Month, 2 = Day, 3 = Hour, 4 = Minute, 5 = Second*/
+
+void main(void)
+{
+// Declare your local variables here
+
+// Input/Output Ports initialization
+// Port A initialization
+// Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
+DDRA=(0<<DDA7) | (0<<DDA6) | (0<<DDA5) | (0<<DDA4) | (0<<DDA3) | (0<<DDA2) | (0<<DDA1) | (0<<DDA0);
+// State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T 
+PORTA=(0<<PORTA7) | (0<<PORTA6) | (0<<PORTA5) | (0<<PORTA4) | (0<<PORTA3) | (0<<PORTA2) | (0<<PORTA1) | (0<<PORTA0);
+
+// Port B initialization
+// Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
+DDRB=(0<<DDB7) | (0<<DDB6) | (0<<DDB5) | (0<<DDB4) | (0<<DDB3) | (0<<DDB2) | (0<<DDB1) | (0<<DDB0);
+// State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T 
+PORTB=(0<<PORTB7) | (0<<PORTB6) | (0<<PORTB5) | (0<<PORTB4) | (0<<PORTB3) | (0<<PORTB2) | (0<<PORTB1) | (0<<PORTB0);
+
+// Port C initialization
+// Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
+DDRC=(0<<DDC7) | (0<<DDC6) | (0<<DDC5) | (0<<DDC4) | (0<<DDC3) | (0<<DDC2) | (0<<DDC1) | (0<<DDC0);
+// State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T 
+PORTC=(0<<PORTC7) | (0<<PORTC6) | (0<<PORTC5) | (0<<PORTC4) | (0<<PORTC3) | (0<<PORTC2) | (0<<PORTC1) | (0<<PORTC0);
+
+// Port D initialization
+// Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
+DDRD=(0<<DDD7) | (0<<DDD6) | (0<<DDD5) | (0<<DDD4) | (0<<DDD3) | (0<<DDD2) | (0<<DDD1) | (0<<DDD0);
+// State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T 
+PORTD=(0<<PORTD7) | (0<<PORTD6) | (0<<PORTD5) | (0<<PORTD4) | (0<<PORTD3) | (0<<PORTD2) | (0<<PORTD1) | (0<<PORTD0);
+
+// Timer/Counter 0 initialization
+// Clock source: System Clock
+// Clock value: Timer 0 Stopped
+// Mode: Normal top=0xFF
+// OC0 output: Disconnected
+TCCR0=(0<<WGM00) | (0<<COM01) | (0<<COM00) | (0<<WGM01) | (0<<CS02) | (0<<CS01) | (0<<CS00);
+TCNT0=0x00;
+OCR0=0x00;
+
+// Timer/Counter 1 initialization
+// Clock source: System Clock
+// Clock value: Timer1 Stopped
+// Mode: Normal top=0xFFFF
+// OC1A output: Disconnected
+// OC1B output: Disconnected
+// Noise Canceler: Off
+// Input Capture on Falling Edge
+// Timer1 Overflow Interrupt: Off
+// Input Capture Interrupt: Off
+// Compare A Match Interrupt: Off
+// Compare B Match Interrupt: Off
+TCCR1A=(0<<COM1A1) | (0<<COM1A0) | (0<<COM1B1) | (0<<COM1B0) | (0<<WGM11) | (0<<WGM10);
+TCCR1B=(0<<ICNC1) | (0<<ICES1) | (0<<WGM13) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
+TCNT1H=0x00;
+TCNT1L=0x00;
+ICR1H=0x00;
+ICR1L=0x00;
+OCR1AH=0x00;
+OCR1AL=0x00;
+OCR1BH=0x00;
+OCR1BL=0x00;
+
+// Timer/Counter 2 initialization
+// Clock source: System Clock
+// Clock value: Timer2 Stopped
+// Mode: Normal top=0xFF
+// OC2 output: Disconnected
+ASSR=0<<AS2;
+TCCR2=(0<<PWM2) | (0<<COM21) | (0<<COM20) | (0<<CTC2) | (0<<CS22) | (0<<CS21) | (0<<CS20);
+TCNT2=0x00;
+OCR2=0x00;
+
+// Timer(s)/Counter(s) Interrupt(s) initialization
+TIMSK=(0<<OCIE2) | (0<<TOIE2) | (0<<TICIE1) | (0<<OCIE1A) | (0<<OCIE1B) | (0<<TOIE1) | (0<<OCIE0) | (0<<TOIE0);
+
+// External Interrupt(s) initialization
+// INT0: On
+// INT0 Mode: Falling Edge
+// INT1: On
+// INT1 Mode: Falling Edge
+// INT2: Off
+GICR|=(1<<INT1) | (1<<INT0) | (0<<INT2);
+MCUCR=(1<<ISC11) | (0<<ISC10) | (1<<ISC01) | (0<<ISC00);
+MCUCSR=(0<<ISC2);
+GIFR=(1<<INTF1) | (1<<INTF0) | (0<<INTF2);
+
+// USART initialization
+// USART disabled
+UCSRB=(0<<RXCIE) | (0<<TXCIE) | (0<<UDRIE) | (0<<RXEN) | (0<<TXEN) | (0<<UCSZ2) | (0<<RXB8) | (0<<TXB8);
+
+// Analog Comparator initialization
+// Analog Comparator: Off
+// The Analog Comparator's positive input is
+// connected to the AIN0 pin
+// The Analog Comparator's negative input is
+// connected to the AIN1 pin
+ACSR=(1<<ACD) | (0<<ACBG) | (0<<ACO) | (0<<ACI) | (0<<ACIE) | (0<<ACIC) | (0<<ACIS1) | (0<<ACIS0);
+SFIOR=(0<<ACME);
+
+// ADC initialization
+// ADC disabled
+ADCSRA=(0<<ADEN) | (0<<ADSC) | (0<<ADATE) | (0<<ADIF) | (0<<ADIE) | (0<<ADPS2) | (0<<ADPS1) | (0<<ADPS0);
+
+// SPI initialization
+// SPI disabled
+SPCR=(0<<SPIE) | (0<<SPE) | (0<<DORD) | (0<<MSTR) | (0<<CPOL) | (0<<CPHA) | (0<<SPR1) | (0<<SPR0);
+
+// TWI initialization
+// TWI disabled
+TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
+
+// DS1302 Real Time Clock initialization
+// Trickle charger: On
+// Trickle charge resistor: 8K
+// Trickle charge diode(s): 1
+rtc_init(1,1,3);
+
+// Alphanumeric LCD initialization
+// Connections are specified in the
+// Project|Configure|C Compiler|Libraries|Alphanumeric LCD menu:
+// RS: PORTB Bit 0
+// RD: PORTB Bit 1
+// EN: PORTB Bit 2
+// D4: PORTD Bit 4
+// D5: PORTD Bit 5
+// D6: PORTD Bit 6
+// D7: PORTD Bit 7
+// Characters/line: 8
+lcd_init(16);
+
+// Globally enable interrupts
+#asm("sei")
+
+rtc_set_time(17,48,0); /* set time 17:48:00 */
+
+rtc_set_date(8,13,24); /* set date 8/13/2024 */
+
+while (1)
+    {
+        if (adjustment_mode == 0) {
+            // Normal mode: Display the time and date
+            rtc_get_time(&hour, &min, &sec);
+            rtc_get_date(&day, &month, &year);
+
+            sprintf(display_buffer, "Time: %2d:%02d:%02d\n", hour, min, sec);
+            lcd_clear();
+            lcd_puts(display_buffer);
+
+            sprintf(display_buffer, "Date: %2d/%02d/%d", day, month, 2000 + year);
+            lcd_puts(display_buffer);
+
+            delay_ms(500); // 0.5 second delay
+        } else {
+            // Adjustment mode: Display which field is being adjusted
+            lcd_clear();
+            switch (adjustment_field) {
+                case 0:
+                    sprintf(display_buffer, "Set Year: %2d", 2000 + year);
+                    break;
+                case 1:
+                    sprintf(display_buffer, "Set Month: %02d", month);
+                    break;
+                case 2:
+                    sprintf(display_buffer, "Set Day: %02d", day);
+                    break;
+                case 3:
+                    sprintf(display_buffer, "Set Hour: %02d", hour);
+                    break;
+                case 4:
+                    sprintf(display_buffer, "Set Min: %02d", min);
+                    break;
+                case 5:
+                    sprintf(display_buffer, "Set Sec: %02d", sec);
+                    break;
+            }
+            lcd_puts(display_buffer);
+            delay_ms(500); // 0.5 second delay
+        }
+    }
+
+}

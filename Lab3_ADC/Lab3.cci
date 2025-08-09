@@ -1,0 +1,9 @@
+VERSION:3 SOURCE_TIMESTAMP:590C9E17
+NODE:I LEVEL:0 LINE:24 "C:\cvavreval\inc\mega16.h"
+NODE:I LEVEL:0 LINE:25 "C:\cvavreval\inc\stdio.h"
+NODE:I LEVEL:0 LINE:28 "C:\cvavreval\inc\delay.h"
+NODE:I LEVEL:0 LINE:31 "C:\cvavreval\inc\alcd.h"
+NODE:F LEVEL:0 LINE:34 "timer0_ovf_isr(void)"
+NODE:M LEVEL:0 LINE:43 "ADC_VREF_TYPE"
+NODE:F LEVEL:0 LINE:46 "adc_isr(void)"
+NODE:F LEVEL:0 LINE:66 "main(void)"
