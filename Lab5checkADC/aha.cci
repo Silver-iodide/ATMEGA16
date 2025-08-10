@@ -1,0 +1,10 @@
+VERSION:3 SOURCE_TIMESTAMP:59188DD2
+NODE:I LEVEL:0 LINE:10 "C:\cvavr2\inc\mega16.h"
+NODE:I LEVEL:0 LINE:12 "C:\cvavr2\inc\delay.h"
+NODE:I LEVEL:0 LINE:15 "C:\cvavr2\inc\stdio.h"
+NODE:M LEVEL:0 LINE:17 "ADC_VREF_TYPE"
+NODE:V LEVEL:0 LINE:18 "newdata -> RAM:????"
+NODE:V LEVEL:0 LINE:19 "transmit_times -> RAM:????"
+NODE:V LEVEL:0 LINE:20 "adc_value -> R4,R5"
+NODE:F LEVEL:0 LINE:23 "adc_isr(void)"
+NODE:F LEVEL:0 LINE:36 "main(void)"
